@@ -1,0 +1,227 @@
+<html>
+<head>
+<title>מחשבון חלוקת הוצאות</title>
+</head>
+<body dir="rtl" style="text-align: center;">
+	<div style="width: 500px; text-align: center;">
+		<h2 style="text-align: center">מחשבון חלוקת הוצאות</h2>
+		
+		<form id="dataForm">
+			<table id="dataTable" align="center">
+				<tr>
+					<th />
+					<th>שם</th>					
+					<th>מספר אנשים</th>					
+					<th>הוצאה</th>
+					<th id="result" style="visibility: hidden;">למי מחזירים?</th>
+				</tr>
+			</table>
+		</form>
+		<a href="javascript: addParticipants()">הוסף משתתפים</a>
+		
+		<h4>עלות למשתתף: &#8362;<span id="costPerParticipant" style="color: #008800">0<span></h4>
+		<div style="margin-top: 20px;">
+			<button onclick="calculateReimbuments()">חשב החזרים</button>
+			<button>נקה הכל</button>
+		</div>
+	</div>
+</body>
+
+<script>
+	var lastParticipantId = 0;
+	const rowPrefix = "row_";
+	const namePrefix = "names_";
+	const numberPrefix = "numOfPeople_";
+	const costPrefix = "cost_";
+	const resultPrefix = "result_";
+	
+	var dataTable = document.getElementById("dataTable");
+	var dataForm = document.getElementById("dataForm");
+
+	function addParticipants() {
+		var participantNumber = lastParticipantId++;
+		
+		var newRow = dataTable.insertRow(-1);
+		newRow.id = rowPrefix + participantNumber;
+		
+		var removalLinkCell = newRow.insertCell(0);
+		removalLinkCell.innerHTML = "<a href=\"javascript: removeRow('" + participantNumber + "');\">הסר</a>";
+		
+		var nameCell = newRow.insertCell(1);
+		nameCell.innerHTML = "<input type=\"text\" name=\"" + namePrefix + participantNumber + "\" onfocusout=\"onNameFocusOut(this)\" />";
+		
+		var numberOfPeopleCell = newRow.insertCell(2);
+		numberOfPeopleCell.innerHTML = "<select name=\"" + numberPrefix + participantNumber + "\"><option value=\"1\">יחיד</option><option value=\"2\">זוג</option></select>";
+		
+		var costCell = newRow.insertCell(3);
+		costCell.innerHTML = "<input type=\"text\" name=\"" + costPrefix + participantNumber + "\" onfocusout=\"onCostFocusOut(this)\" />";
+		
+		var resultCell = newRow.insertCell(4);
+		resultCell.innerHTML = "<span id=\"" + resultPrefix + participantNumber + "\"></span>";
+	}	
+	
+	function calculateAverage() {	
+		cleanResults();
+	
+		var totalCost = 0;
+		var participantsCount = 0;
+		
+		for (var i=0; i<dataForm.elements.length; i++) {
+			var currentElement = dataForm.elements[i];
+			if (currentElement.nodeName == "SELECT" && currentElement.name.startsWith(numberPrefix)) {
+				participantsCount += parseInt(currentElement.options[currentElement.selectedIndex].value, 10);
+			} else if (currentElement.nodeName == "INPUT" && currentElement.name.startsWith(costPrefix) && currentElement.value != "") {
+				totalCost += parseInt(currentElement.value);
+			}
+		}
+		
+		var averageCost = totalCost/participantsCount;
+		
+		var averageCostElement = document.getElementById("costPerParticipant");
+		averageCostElement.innerHTML = averageCost;
+		
+		return averageCost;
+	}
+	
+	function isRowActive(elementName) {
+		return false;
+	}
+	
+	function removeRow(id) {
+		var rowIndex = document.getElementById(rowPrefix + id).rowIndex;	
+		dataTable.deleteRow(rowIndex);
+		
+		calculateTotal();
+	}
+	
+	function onLoad() {
+		addParticipants();
+		addParticipants();
+	}
+	
+	function onNameFocusOut(nameElement) {		
+	}
+	
+	function updateParticipantResult(id, amount, otherParticipantName) {
+		if (amount == 0) {
+			return;
+		}
+	
+		var resultSpan = document.getElementById(resultPrefix + id);
+		if (resultSpan.innerHTML == "") {
+			resultSpan.style.color = amount > 0 ? "#008800" : "#DD0000";
+		}
+		else {
+			resultSpan.innerHTML += ", ";
+		}
+		
+		resultSpan.innerHTML +=
+			amount > 0 ?
+			otherParticipantName + " =&gt; &#8362;" + amount :
+			"&#8362;" + -amount + " =&gt; " + otherParticipantName;
+	}
+	
+	function cleanResults() {
+		for (var i=0; i<lastParticipantId; i++) {
+			var resultSpan = document.getElementById(resultPrefix + i);
+			resultSpan.innerHTML = "";	
+		}
+	}
+	
+	function collectParticipantsData() {
+		var participantsData = {};
+		
+		for (var i=0; i<dataForm.elements.length; i++) {
+			var currentElement = dataForm.elements[i];
+			var elementNameComponents = currentElement.name.split("_");
+			var elementNameType = elementNameComponents[0];
+			var elementNameIndex = elementNameComponents[1];
+			
+			if (currentElement.nodeName == "INPUT" && currentElement.name.startsWith(namePrefix) && currentElement.value != "") {				
+				if (!(elementNameIndex in participantsData)) {
+					participantsData[elementNameIndex] = [currentElement.value];
+				} else {
+					participantsData[elementNameIndex][0] = currentElement.value;
+				}
+			} else if (currentElement.nodeName == "SELECT" && currentElement.name.startsWith(numberPrefix)) {
+				if (!(elementNameIndex in participantsData)) {
+					participantsData[elementNameIndex] = ["_", parseInt(currentElement.value)];
+				} else {
+					participantsData[elementNameIndex][1] = currentElement.value;
+				}
+			} else if (currentElement.nodeName == "INPUT" && currentElement.name.startsWith(costPrefix) && currentElement.value != "") {				
+				if (!(elementNameIndex in participantsData)) {
+					participantsData[elementNameIndex] = [_,0,parseInt(currentElement.value)];
+				} else {
+					participantsData[elementNameIndex][2] = parseInt(currentElement.value);
+				}
+			}
+		}
+		
+		return participantsData;
+	}
+	
+	function calculateReimbuments() {	
+		var costPerPerson = calculateAverage();
+		
+		var surpluses = [];
+		var deficits = [];
+		
+		participantsData = collectParticipantsData();
+		
+		for (var id in participantsData) {
+			var participantDeficit = participantsData[id][2] - costPerPerson*participantsData[id][1];
+		
+			if (participantDeficit > 0) {
+				deficits.push([id, participantsData[id][0], participantDeficit]);
+			}
+			else if (participantDeficit < 0) {
+				surpluses.push([id, participantsData[id][0], -participantDeficit]);
+			}
+		}
+		
+		// sort surpluses and deficits from high to low in money
+		surpluses.sort(function (a, b) { a[2] - b[2]}).reverse();
+		deficits.sort(function (a, b) { a[2] - b[2]}).reverse();
+		
+		alert(surpluses);
+		alert(deficits);
+		
+		var i = j = 0;
+		while (i <= surpluses.length && j <= deficits.length) {
+			if (surpluses[i][2] == deficits[j][2]) {
+				updateParticipantResult(surpluses[i][0], -surpluses[i][2], deficits[j][1]);
+				updateParticipantResult(deficits[j][0], surpluses[i][2], surpluses[i][1]);
+				surpluses[i][2] = 0;
+				deficits[j][2] = 0;
+				i++;
+				j++;
+			}
+			else if (surpluses[i][2] > deficits[j][2]) {				
+				updateParticipantResult(surpluses[i][0], -deficits[j][2], deficits[j][1]);
+				updateParticipantResult(deficits[j][0], deficits[j][2], surpluses[i][1]);
+				surpluses[i][2] -= deficits[j][2];
+				deficits[j][2] = 0;
+				j++;
+			}
+			else if (surpluses[i][2] < deficits[j][2]) {
+				updateParticipantResult(surpluses[i][0], -surpluses[i][2], deficits[j][1]);
+				updateParticipantResult(deficits[j][0], surpluses[i][2], surpluses[i][1]);
+				surpluses[i][2] = 0;
+				deficits[j][2] -= surpluses[i][2];
+				i++;
+			}
+		}
+	}
+	
+	function onCostFocusOut(costElement) {
+		calculateAverage();
+	}
+	
+	if (window.addEventListener) {
+		window.addEventListener('load', onLoad);
+	} else {
+		window.attachEvent('onload', onLoad);
+	}	
+</script>
+</html>
