@@ -37,7 +37,7 @@ function addParticipant() {
 	newParticipantDiv.id = getParticipantDivId(newIndex);
 	newParticipantDiv.className = "participant";
 	newParticipantDiv.innerHTML = 
-		 "<image class=\"delete-participant clickable\" src=\"img/X.svg\" onClick=\"deleteParticipant(" + newIndex + ")\" /><br/>"
+		 "<image class=\"delete-participant clickable\" src=\"img/x.svg\" onClick=\"deleteParticipant(" + newIndex + ")\" /><br/>"
 			+ "<label>שם</label>"
 			+ "<input"
 				+ " type=\"text\""
