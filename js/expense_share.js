@@ -82,7 +82,7 @@ function validateInput(input, warningElement, shouldBeNumber) {
 	var cleanValue = input.value.trim();
 	if (shouldBeNumber) {
 		var numberValue = Number.parseFloat(cleanValue);
-		cleanValue = Number.isNaN(numberValue) ? "" : Math.round(numberValue);
+		cleanValue = Number.isNaN(numberValue) ? "" : Math.max(Math.min(Math.round(numberValue), 9999), 0);		
 	}
 	
 	input.value = cleanValue;
