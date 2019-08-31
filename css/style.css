@@ -43,6 +43,10 @@ hr {
 }
 
 /* mobile settings */
+input, input:focus {
+	font-size: 54px;
+}
+
 .adaptive-width {
 	max-width: 9999px;
 }
@@ -96,6 +100,10 @@ hr {
 
 /* desktop settings */
 @media only screen and (min-width: 1200px) {
+	input, input:focus {
+		font-size: 24px;
+	}
+	
 	.adaptive-width {
 		max-width: 450px;
 		margin: -8px 0px 0px -18px;
