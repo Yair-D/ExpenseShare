@@ -35,42 +35,45 @@ function addParticipant() {
 	"<div class=\"participant\" id=\"" + getParticipantDivId(newIndex) + "\">"
 	var newParticipantDiv = document.createElement("div");
 	newParticipantDiv.id = getParticipantDivId(newIndex);
-	newParticipantDiv.className = "participant";
+	newParticipantDiv.className = "participant rounded-box";
 	newParticipantDiv.innerHTML = 
 		 "<image class=\"delete-participant clickable\" src=\"img/x.svg\" onClick=\"deleteParticipant(" + newIndex + ")\" /><br/>"
-			+ "<label>שם</label>"
+			+ "<label class=\"font-small\">שם</label>"
 			+ "<input"
 				+ " type=\"text\""
+				+ " class=\"font-medium\""
 				+ " id=\"" + getParticipantNameId(newIndex) + "\""
+				+ " maxlength=\"12\""
 				+ " onfocusout=\"validateInput(" + getParticipantNameId(newIndex) + "," + getParticipantNameWarningId(newIndex) + ", false)\""
 				+ " placeholder=\"הכנס שם...\">"
 			+" </input>"
-			+ "<div id=\"" + getParticipantNameWarningId(newIndex) + "\" class=\"warning\">"
+			+ "<div id=\"" + getParticipantNameWarningId(newIndex) + "\" class=\"warning font-small\">"
 				+ "<image src=\"img/warning.svg\" class=\"warning-image\" />"
 				+ "יש להכניס שם"
 			+ "</div>"
-			+ "<div class=\"input float-left\">"
-				+ "<label>הוצאה</label>"
-				+ "<input"
-					+ " type=\"text\""
-					+ " id=\"" + getParticipantCostId(newIndex) + "\""
-					+ " onfocusout=\"validateInput(" + getParticipantCostId(newIndex) + "," + getParticipantCostWarningId(newIndex) + ", true)\""
-					+ " placeholder=\"0\">"
-				+ "</input>"
-				+ "<div id=\"" + getParticipantCostWarningId(newIndex) + "\" class=\"warning\">"
-					+ "<image src=\"img/warning.svg\" class=\"warning-image\" />"
-					+ "יש להכניס סכום תקין"
-				+ "</div>"
-			+ "</div>"
 			+ "<div class=\"input\">"
-				+ "<label>מס' אנשים</label>"
-				+ "<select class=\"clickable\" id=\"" + getParticipantCountId(newIndex) +"\">"
-					+ "<option value=\"1\">1</option>"
+				+ "<label class=\"font-small\">מס' אנשים</label>"
+				+ "<select class=\"clickable font-medium\" id=\"" + getParticipantCountId(newIndex) +"\">"
+					+ "<option class=\"font-medium\" value=\"1\">1</option>"
 					+ "<option value=\"2\">2</option>"
 					+ "<option value=\"3\">3</option>"
 					+ "<option value=\"4\">4</option>"
 					+ "<option value=\"5\">5</option>"
 				+ "</select>"
+			+ "</div>"
+			+ "<div class=\"input right-col\">"
+				+ "<label class=\"font-small\">הוצאה</label>"
+				+ "<input"
+					+ " type=\"number\""
+					+ " class=\"font-medium\""
+					+ " id=\"" + getParticipantCostId(newIndex) + "\""
+					+ " onfocusout=\"validateInput(" + getParticipantCostId(newIndex) + "," + getParticipantCostWarningId(newIndex) + ", true)\""
+					+ " placeholder=\"0\">"
+				+ "</input>"
+				+ "<div id=\"" + getParticipantCostWarningId(newIndex) + "\" class=\"warning font-small\">"
+					+ "<image src=\"img/warning.svg\" class=\"warning-image\" />"
+					+ "יש להכניס סכום תקין"
+				+ "</div>"
 			+ "</div>";
 	
 	participantsDiv.appendChild(newParticipantDiv);
@@ -175,20 +178,38 @@ function calculatetAverageCost(participants) {
 function collectData() {
 	var participants = [];
 	
+	var firstInvalidInputIndex = -1;
+	
 	for (var i = 0; i < participantsDiv.children.length; i++) {
 		var index = participantsDiv.children[i].id.split("_")[1];
 		
 		// fields validation:
-		if (!validateInput(document.getElementById(getParticipantNameId(index)), document.getElementById(getParticipantNameWarningId(index)), false)
-				|| !validateInput(document.getElementById(getParticipantCostId(index)), document.getElementById(getParticipantCostWarningId(index)), true)) {
-			participantsDiv.children[i].scrollIntoView();
-			return null;
-		}			
+		var isNameValid = 
+			validateInput(
+				document.getElementById(getParticipantNameId(index)),
+				document.getElementById(getParticipantNameWarningId(index)),
+				false);
+				
+		var isCostValid = 
+			validateInput(
+				document.getElementById(getParticipantCostId(index)),
+				document.getElementById(getParticipantCostWarningId(index)),
+				true);		
+		
+		if ((!isNameValid || !isCostValid) && firstInvalidInputIndex < 0) {
+			firstInvalidInputIndex = i;
+		}
 		
 		var count = parseInt(document.getElementById(getParticipantCountId(index)).value);
 		var cost = parseInt(document.getElementById(getParticipantCostId(index)).value);
 		
 		participants.push(new Participant(index, count, cost));
+	}
+
+	if (firstInvalidInputIndex >= 0)
+	{
+		participantsDiv.children[firstInvalidInputIndex].scrollIntoView();
+		return null;
 	}
 	
 	return participants;
@@ -214,21 +235,21 @@ function renderParticipantResults(participantData, transfers) {
 	
 	var participantHtml =
 		"<div class=\"participant-transfer\">"
-			+ "<div class=\"participant-transfer-title\">"
+			+ "<div class=\"participant-transfer-title font-large\">"
 				+ "<div class=\"transfer-right-col " + participantClass + " \">" + participantName + "</div>"
 				+ "<div class=\"transfer-left-col\">"
-					+ "<image src=\"img/" + (participantClass == "receiver" ? "take" : "give") + ".svg\" class=\"tranfser-title\" />"
+					+ "<image src=\"img/" + (participantClass == "receiver" ? "take" : "give") + ".svg\" class=\"tranfser-image\" />"
 				+ "</div>"
 			+ "</div>"
-			+ "<div class=\"transfer-right-col " + participantClass + "\">" + spentVerb + "</div>"
-			+ "<div class=\"transfer-left-col " + participantClass + "\">" + "&#8362;" +  participantSpending + "</div>";
+			+ "<div class=\"transfer-right-col font-medium " + participantClass + "\">" + spentVerb + "</div>"
+			+ "<div class=\"transfer-left-col font-medium " + participantClass + "\">" + "&#8362;" +  participantSpending + "</div>";
 
 	for (var i = 0; i < incomingTransfers.length; i++) {
 		var otherParticipantName = document.getElementById(getParticipantNameId(incomingTransfers[i].fromId)).value;
 		
 		participantHtml +=
-			"<div class=\"transfer-right-col " + participantClass + " transfer-large\">" + getVerb + " מ" + otherParticipantName + ":</div>"
-			+ "<div class=\"transfer-left-col " + participantClass + " transfer-large\">&#8362;" + incomingTransfers[i].amount + "</div>";
+			"<div class=\"transfer-right-col font-medium " + participantClass + " transfer-large\">" + getVerb + " מ" + otherParticipantName + ":</div>"
+			+ "<div class=\"transfer-left-col font-medium " + participantClass + " transfer-large\">&#8362;" + incomingTransfers[i].amount + "</div>";
 			
 		participantSum -= incomingTransfers[i].amount;
 	}
@@ -237,16 +258,16 @@ function renderParticipantResults(participantData, transfers) {
 		var otherParticipantName = document.getElementById(getParticipantNameId(outgoingTransfers[i].toId)).value;
 		
 		participantHtml +=
-			"<div class=\"transfer-right-col " + participantClass + " transfer-large\">" + giveVerb + " ל" + otherParticipantName + ":</div>"
-			+ "<div class=\"transfer-left-col " + participantClass + " transfer-large\">&#8362;" + outgoingTransfers[i].amount + "</div>";
+			"<div class=\"transfer-right-col font-medium " + participantClass + " transfer-large\">" + giveVerb + " ל" + otherParticipantName + ":</div>"
+			+ "<div class=\"transfer-left-col font-medium " + participantClass + " transfer-large\">&#8362;" + outgoingTransfers[i].amount + "</div>";
 			
 		participantSum += outgoingTransfers[i].amount;
 	}
 	
 	participantHtml +=
 		"<hr />"
-		+ "<div class=\"transfer-right-col " + participantClass + "\">סה\"כ (" + participantData.count + " אנשים)</div>"
-		+ "<div class=\"transfer-left-col " + participantClass + "\">&#8362;" + participantSum + "</div>";
+		+ "<div class=\"transfer-right-col font-medium " + participantClass + "\">סה\"כ (" + participantData.count + " אנשים)</div>"
+		+ "<div class=\"transfer-left-col font-medium " + participantClass + "\">&#8362;" + participantSum + "</div>";
 	
 	return participantHtml + "</div>";
 }
@@ -261,7 +282,7 @@ function calculate() {
 	var average = calculatetAverageCost(participantsData);
 	var transfers = balance(participantsData, average);
 		
-	document.getElementById("average_cost_value").innerHTML = ils_entity + Math.round(average);
+	document.getElementById("average_cost_value").innerHTML = ils_entity + Math.round(average*100)/100;
 	var transfersHtml = "";
 	
 	for (var i = 0; i < participantsData.length; i++) {

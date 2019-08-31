@@ -8,14 +8,12 @@ body {
 label {
 	margin: 0px 0px 0px 0px;
 	color: #ffe6ba;
-	font-size: 1em;
 }
 
 input, select {
 	margin: 0px;
 	color: #690196;
 	font-family: 'Heebo', sans-serif;
-	font-size: 1.8em;
 	font-weight: 800;
 	width: 100%;
 	border: none;
@@ -23,6 +21,11 @@ input, select {
 	padding: 0px;
 	border-bottom: 2px solid #ffa200; 
 	background-color: transparent;
+	-webkit-appearance: none; 
+}
+
+input[type=number] {
+    -moz-appearance:textfield; /* Firefox */
 }
 
 select {
@@ -39,38 +42,131 @@ hr {
 	margin-bottom: 15px;
 }
 
+/* mobile settings */
+.adaptive-width {
+	max-width: 9999px;
+}
+
+.font-small {
+	font-size: 36px;
+}
+
+.font-medium {
+	font-size: 54px;
+}
+
+.font-large {
+	font-size: 72px;
+}
+
+.font-extra-large {
+	font-size: 84px;
+}
+
+.delete-participant {
+	width: 30px;
+	float: left;
+	margin-left: -10px;
+}
+
+.rounded-box {		
+	margin-bottom: 30px;
+	border-radius: 12px;
+}
+
+.tranfser-image {
+	width: 80px;
+	vertical-align: middle;
+	margin: auto;
+}
+
+#add_participant {
+	margin-top: 12px;
+	margin-bottom: 84px;
+	width: 64px;
+}
+
+#results {
+	display: none; 
+	margin-top: 50px;
+	padding-top: 20px;
+	border-top: solid 2px #9d00bf;	
+	text-align: center;
+}
+
+/* desktop settings */
+@media only screen and (min-width: 1200px) {
+	.adaptive-width {
+		max-width: 450px;
+		margin: -8px 0px 0px -18px;
+	}
+	
+	.delete-participant {
+		width: 15px;
+	}
+	
+	.font-small {
+		font-size: 16px;
+	}
+
+	.font-medium {
+		font-size: 24px;
+	}
+
+	.font-large {
+		font-size: 32px;
+	}
+
+	.font-extra-large {
+		font-size: 38px;
+	}
+	
+	.rounded-box {		
+		margin-bottom: 20px;
+		border-radius: 6px;
+	}
+	
+	.tranfser-image {
+		width: 48px;
+		margin-bottom: 3px;
+	}
+	
+	#add_participant {
+		margin-top: 0px;
+		margin-bottom: 36px;
+		width: 30px;
+	}
+	
+	#results {
+		margin-top: 30px;
+	}
+}
+
 .clickable:hover {
 	cursor: pointer;
 }
 
-div.float-left {
-	float: left;
-}
-
 div.participant {
-	margin-bottom: 20px;
 	padding: 20px 30px 20px 30px;
-	border-radius: 4px;
 	background-image: linear-gradient(to bottom left, #fca001, #fc7701);
 	text-align: right;		
 }
 
-.delete-participant {
-	float: left;
-	margin: -8px 0px 0px -18px;
-	width: 15px;
-}
-
 div.input {
+	display: inline-block;	
 	width: 45%;		
 	margin-top: 20px;
 	margin-bottom: 20px;
+	vertical-align: top;
+}
+
+div.input.right-col {
+	margin-right: 10%;
 }
 
 div.warning {
 	margin-top: 8px;
 	vertical-align: middle;
-	font-size: 1em;
 	font-weight: 700;
 	color: #e50000;
 	display: none;
@@ -93,20 +189,13 @@ input.warning {
 .participant-transfer-title {
 	border-bottom: solid 3px #8f00b4;
 	margin-bottom: 15px;
-	font-size: 1.6em;
 	font-weight: 800;
-}
-
-.tranfser-title {
-	width: 40px;
-	vertical-align: middle;
 }
 
 .transfer-right-col {
 	display: inline-block;
 	width: 65%;
 	padding-right: 5%;
-	font-size: 1.5em;
 	font-weight: 500;
 	opacity: 70%;
 }
@@ -133,7 +222,6 @@ input.warning {
 
 div.transfer-left-col {
 	display: inline-block;
-	font-size: 2.4em;
 	line-height: 130%;
 	font-weight: 800;
 	line-height: 150%;
@@ -143,53 +231,40 @@ div.transfer-left-col {
 div.receiver-amount-small {
 	display: inline-block;
 	text-align: right;
-	font-size: 1.8em;
 	font-weight: 900;
 	color: #399c3e;
 }
 
 #main {
 	margin: auto;
-	max-width: 450px;
 	width: 95%;
 	text-align: right;
 	padding: 2%;
 }
 
-#title {
-	width: 60%;
-	margin-top: 2%;
-	max-width: 270px;
+#top {
+	text-align: center;
 }
 
-#results {
-	display: none; 
-	margin-top: 30px;
-	padding-top: 20px;
-	border-top: solid 2px #9d00bf;	
-	text-align: center;
+#title {
+	width: 60%;
+	margin-top: 5%;
+	margin-bottom: 5%;
 }
 
 #average_cost {
 	color: #a813b0;
-	font-size: 1em;
 	font-weight: 800;
-}
-
-#average_cost_value {
-	font-size: 1.8em;
 }
 
 #results_title {
 	color: #290264;
-	font-size: 2.4em;
 	font-weight: 800;
 }
 
 #clear_all {
 	margin-top: 20px;
 	text-align: center;
-	font-size: 1em;
 	font-weight: 700;
 	color: #690196;
 }
@@ -199,24 +274,17 @@ div.receiver-amount-small {
 }
 
 #calculate {
-	margin-top: 25px;
 	width: 100%;
 	text-align: center;
 	background-color: #690196;
 	border-radius: 9999px;
 	color: #fca001;
-	font-size: 2.4em;
 	font-weight: 800;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 #calculate:active {
 	background-color: #8f00b4;
-}
-
-#add_participant {
-	margin-top: 5px;
-	width: 30px;
 }
 
 #participants_transfers {

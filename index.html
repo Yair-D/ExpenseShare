@@ -8,23 +8,23 @@
 	<title>מחשבון חלוקת הוצאות</title>
 </head>
 <body>
-	<div id="top"></div>
-	<image src="img/title.svg" id="title" />
-	<div id="main">
+	<div id="main" class="adaptive-width">
+		<div id="top"><image src="img/title.svg" id="title" /></div>	
 		<div id="participants"></div>
 		<image class="clickable" src="img/+.svg" id="add_participant" onMouseUp="addParticipant()" />
-		<div class="clickable" id="calculate" onMouseUp="calculate()">חשב</div>
-		<div class="clickable" id="clear_all" onMouseUp="clearAll()">נקה הכל</div>
+		<div class="clickable font-extra-large" id="calculate" onMouseUp="calculate()">חשב</div>
+		<div class="clickable font-small" id="clear_all" onMouseUp="clearAll()">נקה הכל</div>
 		<div id="results">
-			<div id="results_title">מי מחזיר למי?</div>
-			<div id="average_cost">
+			<div id="results_title" class=" font-extra-large">מי מחזיר למי?</div>
+			<div class="font-small">
 				עלות למשתתף:
-				<span id="average_cost_value"></span>
+				<span id="average_cost_value" class="font-medium"></span>
 			</div>
 			<div id="participants_transfers">				
 			</div>
 		</div>
 	</div>
-	&copy; 2019 סטודיו מחלידומבסקי
+	<br/><br/>
+	<span class="font-small">&copy; 2019 סטודיו מחלידומבסקי</span>
 </body>
 </html>
