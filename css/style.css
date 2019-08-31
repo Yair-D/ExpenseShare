@@ -85,9 +85,9 @@ input, input:focus {
 }
 
 #add_participant {
-	margin-top: 12px;
-	margin-bottom: 84px;
-	width: 64px;
+	margin-top: 0px;
+	margin-bottom: 112px;
+	width: 72px;
 }
 
 #results {
@@ -141,8 +141,8 @@ input, input:focus {
 	
 	#add_participant {
 		margin-top: 0px;
-		margin-bottom: 36px;
-		width: 30px;
+		margin-bottom: 48px;
+		width: 36px;
 	}
 	
 	#results {
